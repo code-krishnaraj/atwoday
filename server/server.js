@@ -32,7 +32,7 @@ class Server {
   initRoutes() {
     let router = new Router();
     router.applyAuth(this.app, express, passport);
-    router.applyCommon(this.app, express);
+    //router.applyCommon(this.app, express);
     return this;
   }
 
@@ -63,7 +63,7 @@ class Server {
   stop(done) {
     if (this.dbInstance) {
       logger.info('Disconnecting from DB ...');
-      this.dbInstance.end();
+      this.dbInstance.close();
     }
     logger.info('Shutting down API server...');
     this.serverInstance.close();

@@ -3,7 +3,7 @@
 /**
  * Class for adding helper functions using in models 
 */
-const messageManager = require('../../../../utils/configManager');
+const messageManager = require('../../../utils/configManager');
 const messageCfg = messageManager.getConfig('constants');
 
 class ModelHelper {

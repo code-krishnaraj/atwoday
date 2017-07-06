@@ -1,8 +1,8 @@
 'use strict';
-const projectObj = require('../models/UserModel');
+const userObj = require('../models/UserModel');
 const modelHelper = require('../helpers/modelHelper');
 const validator = require('../validator/projectValidator');
-const messageManager = require('../../../../utils/configManager');
+const messageManager = require('../../../utils/configManager');
 
 const messageCfg = messageManager.getConfig('constants');
 const modelHelperObj = new modelHelper();
