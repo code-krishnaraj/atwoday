@@ -7,7 +7,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const passport = require('passport');
 const Router = require('./router');
 const path = require('path');
 const logger = require('../utils/logger');
@@ -31,8 +30,7 @@ class Server {
 
   initRoutes() {
     let router = new Router();
-    router.applyAuth(this.app, express, passport);
-    //router.applyCommon(this.app, express);
+    router.routesCommon(this.app, express);
     return this;
   }
 

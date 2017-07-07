@@ -13,6 +13,25 @@ class ProjectDao {
     this.type = 'User';
   }
 
+  store(request, response) {
+    let type = this.type;
+    let project = new projectObj({
+      name: request.body.name,
+      user_id: request.session.userId
+    });
+
+    project.save(function(err, result) {
+      if (err) {
+        response.json(modelHelperObj.errorMessageFormat(type, messageCfg.STATUS_ERROR_SERVICE_NOT_AVAILABLE, 
+          messageCfg.STATUS_ERROR_SERVICE_NOT_AVAILABLE_MESSAGE, err))
+      } else {
+        let url = request.protocol + '://' + request.get('host') + request.baseUrl + '/project/'+ result._id;
+        let attribute = {title:result.name, link: url}
+        response.json(modelHelperObj.successMessageFormat(type, attribute));
+      }
+    });
+  }
+
   getAll(request, response) {
     let userId = request.session.userId, type = this.type;
     projectObj.find({$or: [{shared_users: {$elemMatch: {'uid': userId}}}, {user_id: userId}]})
