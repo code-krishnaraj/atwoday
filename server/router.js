@@ -12,6 +12,9 @@ class Router {
     commonRoutes.post('/login', function(request, response) {
       userCtrlObj.login(request, response);
     });
+    
+
+    
     expressApp.use('/api/v1', commonRoutes);
     
   }

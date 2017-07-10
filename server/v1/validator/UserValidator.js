@@ -1,25 +1,35 @@
 'use strict';
 
 /**
- * Class for adding validator functions using in Project entity 
+ * Class for adding validator functions in User entity 
 */
 const Q = require('q');
+const messageManager = require('../../../utils/configManager');
+
+const messageCfg = messageManager.getConfig('constants');
 
 class UserValidator {
 
   /**
-   * Method to validate project name given
+   * Method to validate Login Action
    */
 
-   validateLogin(projectName) {
+   validateLogin(request) {
       let deffered = Q.defer();
-      if(projectName == '' || typeof projectName === 'undefined') {
-        deffered.reject(false);
-      } else {
-        deffered.resolve(true);
-      }
+      let validError = {}, valid = true;
+
+      request.checkBody('user_name', messageCfg.VALIDATION_MESSAGES.USER.LOGIN.USER_NAME).notEmpty();
+      request.checkBody('password', messageCfg.VALIDATION_MESSAGES.USER.LOGIN.PASSWORD).notEmpty();
+
+      request.getValidationResult().then(function(result) {
+        if (!result.isEmpty()) {
+          validError.errors = result.array();
+          deffered.reject(validError);
+        } else {
+          deffered.resolve(true);
+        }
+      });
       return deffered.promise;
    } 
- 
 }
 module.exports = UserValidator;

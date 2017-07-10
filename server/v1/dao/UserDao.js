@@ -14,27 +14,13 @@ class ProjectDao {
     this.type = 'User';
   }
 
-  store(request, response) {
+  login(request, response) {
     let type = this.type;
-    let projectName = request.body.name;
-    let project = new projectObj({
-      name: projectName,
-      user_id: request.session.userId
-    });
-
-    userValidatorObj.validateAddProject(projectName).then(function (valid) {
-      project.save(function(err, result) {
-        if (err) {
-          response.json(modelHelperObj.errorMessageFormat(type, messageCfg.STATUS_ERROR_SERVICE_NOT_AVAILABLE, 
-            messageCfg.STATUS_ERROR_SERVICE_NOT_AVAILABLE_MESSAGE, err))
-        } else {
-          let url = request.protocol + '://' + request.get('host') + request.baseUrl + '/project/'+ result._id;
-          let attribute = {title:result.name, link: url}
-          response.json(modelHelperObj.successMessageFormat(type, attribute));
-        }
-      });
+    userValidatorObj.validateLogin(request).then(function (valid) {
+      
     }).catch(function (error) {
-      response.json(modelHelperObj.errorMessageFormat(type, messageCfg.STATUS_VALIDATE_ERROR_CODE, ''))
+      response.json(modelHelperObj.errorMessageFormat(type, messageCfg.STATUS_VALIDATE_ERROR_CODE, '', 
+        error))
     }); 
   }
 

@@ -7,6 +7,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const validator = require('express-validator');
 const Router = require('./router');
 const path = require('path');
 const logger = require('../utils/logger');
@@ -23,7 +24,8 @@ class Server {
     this.app.use(bodyParser.urlencoded({
       extended: true
     }));
-
+    this.app.use(validator());
+    
     this.serverInstance = null;
     
   }
