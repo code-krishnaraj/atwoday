@@ -1,11 +1,12 @@
 'use strict';
 const userObj = require('../models/UserModel');
 const modelHelper = require('../helpers/modelHelper');
-const validator = require('../validator/projectValidator');
+const userValidator = require('../validator/UserValidator');
 const messageManager = require('../../../utils/configManager');
 
 const messageCfg = messageManager.getConfig('constants');
 const modelHelperObj = new modelHelper();
+const userValidatorObj = new userValidator();
 
 class ProjectDao {
 
@@ -15,21 +16,26 @@ class ProjectDao {
 
   store(request, response) {
     let type = this.type;
+    let projectName = request.body.name;
     let project = new projectObj({
-      name: request.body.name,
+      name: projectName,
       user_id: request.session.userId
     });
 
-    project.save(function(err, result) {
-      if (err) {
-        response.json(modelHelperObj.errorMessageFormat(type, messageCfg.STATUS_ERROR_SERVICE_NOT_AVAILABLE, 
-          messageCfg.STATUS_ERROR_SERVICE_NOT_AVAILABLE_MESSAGE, err))
-      } else {
-        let url = request.protocol + '://' + request.get('host') + request.baseUrl + '/project/'+ result._id;
-        let attribute = {title:result.name, link: url}
-        response.json(modelHelperObj.successMessageFormat(type, attribute));
-      }
-    });
+    userValidatorObj.validateAddProject(projectName).then(function (valid) {
+      project.save(function(err, result) {
+        if (err) {
+          response.json(modelHelperObj.errorMessageFormat(type, messageCfg.STATUS_ERROR_SERVICE_NOT_AVAILABLE, 
+            messageCfg.STATUS_ERROR_SERVICE_NOT_AVAILABLE_MESSAGE, err))
+        } else {
+          let url = request.protocol + '://' + request.get('host') + request.baseUrl + '/project/'+ result._id;
+          let attribute = {title:result.name, link: url}
+          response.json(modelHelperObj.successMessageFormat(type, attribute));
+        }
+      });
+    }).catch(function (error) {
+      response.json(modelHelperObj.errorMessageFormat(type, messageCfg.STATUS_VALIDATE_ERROR_CODE, ''))
+    }); 
   }
 
   getAll(request, response) {
